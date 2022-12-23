@@ -54,7 +54,8 @@ namespace wcf_chat
             {
                 ID = nextId,
                 Name = name,
-                operationContext = OperationContext.Current
+                operationContext = OperationContext.Current,
+                operationContextTime = OperationContext.Current,
             };
             nextId++;
             GetUsers();
@@ -116,7 +117,7 @@ namespace wcf_chat
         {
             foreach (var item in users)
             {
-                item.operationContext.GetCallbackChannel<IServerChatCallback>().CallbackTime(time);
+                item.operationContextTime.GetCallbackChannel<IServerChatCallback>().CallbackTime(time);
             }
         }
 

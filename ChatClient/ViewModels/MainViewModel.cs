@@ -226,7 +226,7 @@ namespace ChatClient.ViewModels
             }
         }
 
-        public void CallbackResult(ServiceChatGameResult result)
+        public async void CallbackResult(ServiceChatGameResult result)
         {
             switch(result) 
             {
@@ -245,7 +245,7 @@ namespace ChatClient.ViewModels
                 default:
                     break;
             }
-            MessageBox.Show(Result);
+            await Task.Delay(5000);
             Result = "";
         }
         #region MVVM

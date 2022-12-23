@@ -8,5 +8,6 @@ namespace wcf_chat
         public string Name { get; set; }
 
         public OperationContext operationContext { get; set; }
+        public OperationContext operationContextTime { get; set; }
     }
 }
