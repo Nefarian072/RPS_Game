@@ -1,18 +1,14 @@
 ﻿using System.ComponentModel;
-using System.Drawing;
 using System.Runtime.CompilerServices;
-using System.Windows.Media;
 
 namespace ChatClient.Models
 {
-    public class User:INotifyPropertyChanged
+    public class User : INotifyPropertyChanged
     {
         private int id;
         private string name;
         private string choice;
         private bool inGame;
-        private SolidColorBrush color;
-
 
         private int x;
 
@@ -25,18 +21,6 @@ namespace ChatClient.Models
             set
             {
                 x = value;
-                OnPropertyChanged();
-            }
-        }
-        public SolidColorBrush Color
-        {
-            get
-            {
-                return color;
-            }
-            set
-            {
-                color = value;
                 OnPropertyChanged();
             }
         }
@@ -55,8 +39,6 @@ namespace ChatClient.Models
                 OnPropertyChanged();
             }
         }
-
-
 
         public User()
         {
@@ -120,8 +102,6 @@ namespace ChatClient.Models
                 OnPropertyChanged();
             }
         }
-
-
 
 
         #region MVVM

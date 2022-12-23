@@ -9,7 +9,184 @@
 //------------------------------------------------------------------------------
 
 namespace ChatClient.ServiceChat {
+    using System.Runtime.Serialization;
+    using System;
     
+    
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
+    [System.Runtime.Serialization.DataContractAttribute(Name="ServiceChat.GameAction", Namespace="http://schemas.datacontract.org/2004/07/wcf_chat")]
+    public enum ServiceChatGameAction : int {
+        
+        [System.Runtime.Serialization.EnumMemberAttribute()]
+        None = 0,
+        
+        [System.Runtime.Serialization.EnumMemberAttribute()]
+        Rock = 1,
+        
+        [System.Runtime.Serialization.EnumMemberAttribute()]
+        Paper = 2,
+        
+        [System.Runtime.Serialization.EnumMemberAttribute()]
+        Scissors = 3,
+    }
+    
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
+    [System.Runtime.Serialization.DataContractAttribute(Name="ServiceChat.GameResult", Namespace="http://schemas.datacontract.org/2004/07/wcf_chat")]
+    public enum ServiceChatGameResult : int {
+        
+        [System.Runtime.Serialization.EnumMemberAttribute()]
+        None = 0,
+        
+        [System.Runtime.Serialization.EnumMemberAttribute()]
+        Win = 1,
+        
+        [System.Runtime.Serialization.EnumMemberAttribute()]
+        Lose = 2,
+        
+        [System.Runtime.Serialization.EnumMemberAttribute()]
+        Draw = 3,
+    }
+    
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
+    [System.Runtime.Serialization.DataContractAttribute(Name="User", Namespace="http://schemas.datacontract.org/2004/07/ChatClient.Models")]
+    [System.SerializableAttribute()]
+    public partial class User : object, System.Runtime.Serialization.IExtensibleDataObject, System.ComponentModel.INotifyPropertyChanged {
+        
+        [System.NonSerializedAttribute()]
+        private System.Runtime.Serialization.ExtensionDataObject extensionDataField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private string ChoiceField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private System.Windows.Media.SolidColorBrush ColorField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private int IdField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private bool InGameField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private string NameField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private int XField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private int YField;
+        
+        [global::System.ComponentModel.BrowsableAttribute(false)]
+        public System.Runtime.Serialization.ExtensionDataObject ExtensionData {
+            get {
+                return this.extensionDataField;
+            }
+            set {
+                this.extensionDataField = value;
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string Choice {
+            get {
+                return this.ChoiceField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.ChoiceField, value) != true)) {
+                    this.ChoiceField = value;
+                    this.RaisePropertyChanged("Choice");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public System.Windows.Media.SolidColorBrush Color {
+            get {
+                return this.ColorField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.ColorField, value) != true)) {
+                    this.ColorField = value;
+                    this.RaisePropertyChanged("Color");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public int Id {
+            get {
+                return this.IdField;
+            }
+            set {
+                if ((this.IdField.Equals(value) != true)) {
+                    this.IdField = value;
+                    this.RaisePropertyChanged("Id");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public bool InGame {
+            get {
+                return this.InGameField;
+            }
+            set {
+                if ((this.InGameField.Equals(value) != true)) {
+                    this.InGameField = value;
+                    this.RaisePropertyChanged("InGame");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string Name {
+            get {
+                return this.NameField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.NameField, value) != true)) {
+                    this.NameField = value;
+                    this.RaisePropertyChanged("Name");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public int X {
+            get {
+                return this.XField;
+            }
+            set {
+                if ((this.XField.Equals(value) != true)) {
+                    this.XField = value;
+                    this.RaisePropertyChanged("X");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public int Y {
+            get {
+                return this.YField;
+            }
+            set {
+                if ((this.YField.Equals(value) != true)) {
+                    this.YField = value;
+                    this.RaisePropertyChanged("Y");
+                }
+            }
+        }
+        
+        public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
+        
+        protected void RaisePropertyChanged(string propertyName) {
+            System.ComponentModel.PropertyChangedEventHandler propertyChanged = this.PropertyChanged;
+            if ((propertyChanged != null)) {
+                propertyChanged(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
+            }
+        }
+    }
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
     [System.ServiceModel.ServiceContractAttribute(ConfigurationName="ServiceChat.IServiceChat", CallbackContract=typeof(ChatClient.ServiceChat.IServiceChatCallback))]
@@ -32,6 +209,30 @@ namespace ChatClient.ServiceChat {
         
         [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IServiceChat/SendMsg")]
         System.Threading.Tasks.Task SendMsgAsync(string msg, int id);
+        
+        [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IServiceChat/GetUsers")]
+        void GetUsers();
+        
+        [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IServiceChat/GetUsers")]
+        System.Threading.Tasks.Task GetUsersAsync();
+        
+        [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IServiceChat/SendChoice")]
+        void SendChoice(int id, ChatClient.ServiceChat.ServiceChatGameAction action);
+        
+        [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IServiceChat/SendChoice")]
+        System.Threading.Tasks.Task SendChoiceAsync(int id, ChatClient.ServiceChat.ServiceChatGameAction action);
+        
+        [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IServiceChat/GetTime")]
+        void GetTime(int time);
+        
+        [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IServiceChat/GetTime")]
+        System.Threading.Tasks.Task GetTimeAsync(int time);
+        
+        [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IServiceChat/GetResult")]
+        void GetResult(ChatClient.ServiceChat.ServiceChatGameResult result);
+        
+        [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IServiceChat/GetResult")]
+        System.Threading.Tasks.Task GetResultAsync(ChatClient.ServiceChat.ServiceChatGameResult result);
     }
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
@@ -39,6 +240,15 @@ namespace ChatClient.ServiceChat {
         
         [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IServiceChat/MsgCallback")]
         void MsgCallback(string msg);
+        
+        [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IServiceChat/CallbackTime")]
+        void CallbackTime(int time);
+        
+        [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IServiceChat/CallbackPlayers")]
+        void CallbackPlayers(ChatClient.ServiceChat.User[] users);
+        
+        [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IServiceChat/CallbackResult")]
+        void CallbackResult(ChatClient.ServiceChat.ServiceChatGameResult result);
     }
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
@@ -91,6 +301,38 @@ namespace ChatClient.ServiceChat {
         
         public System.Threading.Tasks.Task SendMsgAsync(string msg, int id) {
             return base.Channel.SendMsgAsync(msg, id);
+        }
+        
+        public void GetUsers() {
+            base.Channel.GetUsers();
+        }
+        
+        public System.Threading.Tasks.Task GetUsersAsync() {
+            return base.Channel.GetUsersAsync();
+        }
+        
+        public void SendChoice(int id, ChatClient.ServiceChat.ServiceChatGameAction action) {
+            base.Channel.SendChoice(id, action);
+        }
+        
+        public System.Threading.Tasks.Task SendChoiceAsync(int id, ChatClient.ServiceChat.ServiceChatGameAction action) {
+            return base.Channel.SendChoiceAsync(id, action);
+        }
+        
+        public void GetTime(int time) {
+            base.Channel.GetTime(time);
+        }
+        
+        public System.Threading.Tasks.Task GetTimeAsync(int time) {
+            return base.Channel.GetTimeAsync(time);
+        }
+        
+        public void GetResult(ChatClient.ServiceChat.ServiceChatGameResult result) {
+            base.Channel.GetResult(result);
+        }
+        
+        public System.Threading.Tasks.Task GetResultAsync(ChatClient.ServiceChat.ServiceChatGameResult result) {
+            return base.Channel.GetResultAsync(result);
         }
     }
 }

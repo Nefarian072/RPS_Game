@@ -32,6 +32,7 @@ namespace wcf_chat
 
                     tm = 0;
                     GameResult result = GameLogic();
+                    GetResult(result);   
 
                 }
                 await Task.Delay(1000);
