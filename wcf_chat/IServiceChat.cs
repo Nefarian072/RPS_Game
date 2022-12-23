@@ -5,6 +5,7 @@ using System.Runtime.Serialization;
 using System.ServiceModel;
 using System.Text;
 using static wcf_chat.ServiceChat;
+using ChatClient.Models;
 
 namespace wcf_chat
 {
@@ -28,7 +29,10 @@ namespace wcf_chat
         void SendChoice(int id, GameAction action);
 
         [OperationContract(IsOneWay = true)]
-        void GetTime();
+        void GetTime(int time);
+
+        [OperationContract(IsOneWay = true)]
+        void GetResult(GameResult result);
 
     }
 
@@ -37,6 +41,12 @@ namespace wcf_chat
         [OperationContract(IsOneWay = true)]
         void MsgCallback(string msg);
         [OperationContract(IsOneWay = true)]
-        void MsgCallbackTime(int time);
+        void CallbackTime(int time);
+
+        [OperationContract(IsOneWay = true)]
+        void CallbackPlayers(List<User> users);
+
+        [OperationContract(IsOneWay = true)]
+        void CallbackResult(GameResult result);
     }
 }
