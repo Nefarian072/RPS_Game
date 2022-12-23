@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.ServiceModel;
-
+using System.Threading.Tasks;
 
 namespace wcf_chat
 {
@@ -10,7 +10,35 @@ namespace wcf_chat
     public class ServiceChat : IServiceChat
     {
         List<ServerUser> users = new List<ServerUser>();
+        Dictionary<int, GameAction> actionUsers = new Dictionary<int, GameAction>();
         int nextId = 1;
+        public int tm = 0;
+        public ServiceChat()
+        {
+            Timer();
+        }
+
+        private async void Timer()
+        {
+            while (true)
+            {
+                if (users.Count < 2)
+                {
+                    await Task.Delay(100);
+                    continue;
+                }
+                if (tm >= 15)
+                {
+
+                    tm = 0;
+                    GameResult result = GameLogic();
+
+                }
+                await Task.Delay(1000);
+                tm += 1;
+                GetTime(tm);
+            }
+        }
 
         public int Connect(string name)
         {
@@ -22,8 +50,7 @@ namespace wcf_chat
                 operationContext = OperationContext.Current
             };
             nextId++;
-
-            SendMsg(": " + user.Name + " подключился к чату!", 0);
+            GetUsers();
             users.Add(user);
             return user.ID;
         }
@@ -34,8 +61,8 @@ namespace wcf_chat
             if (user != null)
             {
                 users.Remove(user);
-                SendMsg(": " + user.Name + " покинул чат!", 0);
             }
+            GetUsers();
         }
 
         public void SendMsg(string msg, int id)
@@ -61,16 +88,29 @@ namespace wcf_chat
         }
         public void GetUsers()
         {
-            string answer = "";
-            foreach (var us in users)
+            var answer = users.Select(u => new ChatClient.Models.User
             {
-                answer += $"{us.ID}|{us.Name}\n";
-            }
+                Id = u.ID,
+                Name = u.Name,
+            }).ToList();
             foreach (var item in users)
             {
-                item.operationContext.GetCallbackChannel<IServerChatCallback>().MsgCallback(answer);
+                item.operationContext.GetCallbackChannel<IServerChatCallback>().CallbackPlayers(answer);
             }
 
+        }
+
+        public void SendChoice(int id, GameAction action)
+        {
+            actionUsers.Add(id, action);
+        }
+
+        public void GetTime(int time)
+        {
+            foreach (var item in users)
+            {
+                item.operationContext.GetCallbackChannel<IServerChatCallback>().CallbackTime(time);
+            }
         }
 
         public enum GameAction
@@ -81,5 +121,25 @@ namespace wcf_chat
             Scissors
         }
 
+        public enum GameResult
+        {
+            None,
+            Win,
+            Lose,
+            Draw
+        }
+
+        public GameResult GameLogic()
+        {
+            return GameResult.None;
+        }
+
+        public void GetResult(GameResult result)
+        {
+            foreach (var item in users)
+            {
+                item.operationContext.GetCallbackChannel<IServerChatCallback>().CallbackResult(result);
+            }
+        }
     }
 }
