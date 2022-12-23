@@ -35,10 +35,6 @@
       <xsd:import schemaLocation="http://localhost:8301/?xsd=xsd1" namespace="http://schemas.microsoft.com/2003/10/Serialization/" />
       <xsd:import schemaLocation="http://localhost:8301/?xsd=xsd2" namespace="http://schemas.datacontract.org/2004/07/wcf_chat" />
       <xsd:import schemaLocation="http://localhost:8301/?xsd=xsd3" namespace="http://schemas.datacontract.org/2004/07/ChatClient.Models" />
-      <xsd:import schemaLocation="http://localhost:8301/?xsd=xsd4" namespace="http://schemas.datacontract.org/2004/07/System.Windows.Media" />
-      <xsd:import schemaLocation="http://localhost:8301/?xsd=xsd5" namespace="http://schemas.datacontract.org/2004/07/System.Windows.Media.Animation" />
-      <xsd:import schemaLocation="http://localhost:8301/?xsd=xsd6" namespace="http://schemas.datacontract.org/2004/07/System.Windows" />
-      <xsd:import schemaLocation="http://localhost:8301/?xsd=xsd7" namespace="http://schemas.datacontract.org/2004/07/System.Windows.Threading" />
     </xsd:schema>
   </wsdl:types>
   <wsdl:message name="IServiceChat_Connect_InputMessage">

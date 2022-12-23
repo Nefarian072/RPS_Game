@@ -38,13 +38,16 @@ namespace ChatClient.ServiceChat {
         None = 0,
         
         [System.Runtime.Serialization.EnumMemberAttribute()]
-        Win = 1,
+        WinRock = 1,
         
         [System.Runtime.Serialization.EnumMemberAttribute()]
-        Lose = 2,
+        WinPaper = 2,
         
         [System.Runtime.Serialization.EnumMemberAttribute()]
-        Draw = 3,
+        WinScissors = 3,
+        
+        [System.Runtime.Serialization.EnumMemberAttribute()]
+        Draw = 4,
     }
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
@@ -58,9 +61,6 @@ namespace ChatClient.ServiceChat {
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
         private string ChoiceField;
-        
-        [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private System.Windows.Media.SolidColorBrush ColorField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
         private int IdField;
@@ -96,19 +96,6 @@ namespace ChatClient.ServiceChat {
                 if ((object.ReferenceEquals(this.ChoiceField, value) != true)) {
                     this.ChoiceField = value;
                     this.RaisePropertyChanged("Choice");
-                }
-            }
-        }
-        
-        [System.Runtime.Serialization.DataMemberAttribute()]
-        public System.Windows.Media.SolidColorBrush Color {
-            get {
-                return this.ColorField;
-            }
-            set {
-                if ((object.ReferenceEquals(this.ColorField, value) != true)) {
-                    this.ColorField = value;
-                    this.RaisePropertyChanged("Color");
                 }
             }
         }

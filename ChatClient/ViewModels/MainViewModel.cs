@@ -7,6 +7,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.ServiceModel;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
@@ -21,6 +22,7 @@ namespace ChatClient.ViewModels
         ServiceChatClient client;
 
         private int time = 0;
+        private string result = "";
 
         public int Time
         {
@@ -31,6 +33,19 @@ namespace ChatClient.ViewModels
             set
             {
                 time = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public string Result
+        {
+            get
+            {
+                return result;
+            }
+            set
+            {
+                result = value;
                 OnPropertyChanged();
             }
         }
@@ -103,6 +118,8 @@ namespace ChatClient.ViewModels
         private RelayCommand startGame;
         private RelayCommand endGame;
         private RelayCommand rockSelect;
+        private RelayCommand paperSelect;
+        private RelayCommand scissorsSelect;
 
         public RelayCommand StartGame
         {
@@ -145,12 +162,30 @@ namespace ChatClient.ViewModels
                 return rockSelect ??
                   (rockSelect = new RelayCommand(obj =>
                   {
-                      Users.Add(new Models.User()
-                      {
-                          Name = "Nikita",
-                          Id = random.Next(),
-                      });
-                  }/*(obj)=>!Me.InGame*/));
+                      client.SendChoice(Me.Id, ServiceChatGameAction.Rock);
+                  },(obj)=>Me.InGame));
+            }
+        }
+        public RelayCommand PaperSelect
+        {
+            get
+            {
+                return paperSelect ??
+                  (paperSelect = new RelayCommand(obj =>
+                  {
+                      client.SendChoice(Me.Id, ServiceChatGameAction.Paper);
+                  },(obj)=>Me.InGame));
+            }
+        }
+        public RelayCommand ScissorsSelect
+        {
+            get
+            {
+                return scissorsSelect ??
+                  (scissorsSelect = new RelayCommand(obj =>
+                  {
+                      client.SendChoice(Me.Id, ServiceChatGameAction.Scissors);
+                  },(obj)=>Me.InGame));
             }
         }
        
@@ -193,7 +228,25 @@ namespace ChatClient.ViewModels
 
         public void CallbackResult(ServiceChatGameResult result)
         {
-            int i = 0;
+            switch(result) 
+            {
+                case ServiceChatGameResult.WinRock:
+                    Result = "Камень победил!";
+                    break;
+                case ServiceChatGameResult.WinScissors:
+                    Result = "Ножницы победили!";
+                    break;
+                case ServiceChatGameResult.WinPaper:
+                    Result = "Бумага победила!";
+                    break;
+                case ServiceChatGameResult.Draw:
+                    Result = "Ничья!";
+                    break;
+                default:
+                    break;
+            }
+            MessageBox.Show(Result);
+            Result = "";
         }
         #region MVVM
         public event PropertyChangedEventHandler PropertyChanged;
@@ -203,10 +256,11 @@ namespace ChatClient.ViewModels
                 PropertyChanged(this, new PropertyChangedEventArgs(prop));
         }
 
-        
+
 
 
         #endregion
+        
     }
 }
 
