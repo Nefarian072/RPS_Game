@@ -82,15 +82,6 @@ namespace wcf_chat
             }
             foreach (var item in users)
             {
-                /*string answer = DateTime.Now.ToShortTimeString();
-
-                var user = users.FirstOrDefault(i => i.ID == id);
-                if (user != null)
-                {
-                    answer += ": " + user.Name+" ";
-                }
-                answer += msg;*/
-
                 item.operationContext.GetCallbackChannel<IServerChatCallback>().MsgCallback(answer);
             }
         }
