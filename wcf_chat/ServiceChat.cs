@@ -29,7 +29,7 @@ namespace wcf_chat
                     tm = 0;
                     continue;
                 }
-                if (tm > 9)
+                if (tm > 19)
                 {
 
                     tm = 0;
