@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.ServiceModel;
 using System.Threading.Tasks;
@@ -25,13 +26,19 @@ namespace wcf_chat
                 if (users.Count < 2)
                 {
                     await Task.Delay(100);
+                    tm = 0;
                     continue;
                 }
-                if (tm >= 15)
+                if (tm > 19)
                 {
 
                     tm = 0;
                     GameResult result = GameLogic();
+                    if (!CheckCountResultPlayer())
+                    {
+                        ResultFlow();
+                    }
+                    GetResult(result);
 
                 }
                 await Task.Delay(1000);
@@ -47,7 +54,8 @@ namespace wcf_chat
             {
                 ID = nextId,
                 Name = name,
-                operationContext = OperationContext.Current
+                operationContext = OperationContext.Current,
+                operationContextTime = OperationContext.Current,
             };
             nextId++;
             GetUsers();
@@ -74,15 +82,6 @@ namespace wcf_chat
             }
             foreach (var item in users)
             {
-                /*string answer = DateTime.Now.ToShortTimeString();
-
-                var user = users.FirstOrDefault(i => i.ID == id);
-                if (user != null)
-                {
-                    answer += ": " + user.Name+" ";
-                }
-                answer += msg;*/
-
                 item.operationContext.GetCallbackChannel<IServerChatCallback>().MsgCallback(answer);
             }
         }
@@ -109,29 +108,89 @@ namespace wcf_chat
         {
             foreach (var item in users)
             {
-                item.operationContext.GetCallbackChannel<IServerChatCallback>().CallbackTime(time);
+                item.operationContextTime.GetCallbackChannel<IServerChatCallback>().CallbackTime(time);
             }
         }
 
         public enum GameAction
         {
-            None,
-            Rock,
-            Paper,
-            Scissors
+            None = 0,
+            Rock = 1,
+            Paper = 2,
+            Scissors = 3
         }
 
         public enum GameResult
         {
             None,
-            Win,
-            Lose,
+            WinRock,
+            WinPaper,
+            WinScissors,
             Draw
         }
 
+        public bool CheckCountResultPlayer()
+        {
+            return users.Count == actionUsers.Count;
+        }
+        public void ResultFlow()
+        {
+            foreach (var item in users)
+            {
+                if (!actionUsers.ContainsKey(item.ID))
+                    actionUsers.Add(item.ID, (GameAction)(new Random()).Next(1, 3));
+            }
+        }
         public GameResult GameLogic()
         {
-            return GameResult.None;
+
+            var values = actionUsers.Values.ToList();
+            if (values.Contains(GameAction.Rock) && values.Contains(GameAction.Paper) && values.Contains(GameAction.Scissors))
+            {
+                return GameResult.Draw;
+            }
+
+            GameResult result = GameResult.None;
+
+            int RCount = values.Count(a => a == GameAction.Rock);
+            int SCount = values.Count(a => a == GameAction.Scissors);
+            int PCount = values.Count(a => a == GameAction.Paper);
+            if (RCount > 0 && SCount > 0)
+            {
+                result = GameResult.WinRock;
+            }
+            else
+            if (RCount > 0 && SCount == 0 && PCount == 0)
+            {
+                result = GameResult.WinRock;
+
+            }
+            else
+            if (SCount > 0 && PCount > 0)
+            {
+                result = GameResult.WinScissors;
+
+            }
+            else
+            if (SCount > 0 && PCount == 0 && RCount == 0)
+            {
+                result = GameResult.WinScissors;
+
+            }
+            else
+            if (PCount > 0 && RCount > 0)
+            {
+                result = GameResult.WinPaper;
+
+            }
+            else
+            if (PCount > 0 && SCount == 0 && RCount == 0)
+            {
+                result = GameResult.WinPaper;
+            }
+
+            actionUsers = new Dictionary<int, GameAction>();
+            return result;
         }
 
         public void GetResult(GameResult result)

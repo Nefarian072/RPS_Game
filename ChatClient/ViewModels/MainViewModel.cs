@@ -4,8 +4,10 @@ using System;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
+using System.Linq;
 using System.Runtime.CompilerServices;
 using System.ServiceModel;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
@@ -16,9 +18,38 @@ namespace ChatClient.ViewModels
     {
         Random random;
 
-        private ObservableCollection<User> users;
+        private ObservableCollection<Models.User> users;
         ServiceChatClient client;
-        private double canvasHeight = 200;
+
+        private int time = 0;
+        private string result = "";
+
+        public int Time
+        {
+            get
+            {
+                return time;
+            }
+            set
+            {
+                time = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public string Result
+        {
+            get
+            {
+                return result;
+            }
+            set
+            {
+                result = value;
+                OnPropertyChanged();
+            }
+        }
+        private double canvasHeight = 250;
 
         public double CanvasHeight
         {
@@ -32,7 +63,7 @@ namespace ChatClient.ViewModels
                 OnPropertyChanged();
             }
         }
-        private double canvasWeight = 200;
+        private double canvasWeight = 250;
 
         public double CanvasWeight
         {
@@ -49,26 +80,20 @@ namespace ChatClient.ViewModels
 
 
 
-        public ObservableCollection<User> Users
+        public ObservableCollection<Models.User> Users
         {
             get
             {
-
                 return users;
-
             }
             set
             {
                 users = value;
-
                 OnPropertyChanged();
-
-
             }
         }
-        private User me;
-
-        public User Me
+        private Models.User me;
+        public Models.User Me
         {
             get
             {
@@ -83,26 +108,9 @@ namespace ChatClient.ViewModels
         public MainViewModel()
         {
             random = new Random();
-            Me = new User();
-            Users = new ObservableCollection<User>();
+            Me = new Models.User();
+            Users = new ObservableCollection<Models.User>();
             Users.CollectionChanged += Users_CollectionChanged;
-
-
-            Users.Add(new User()
-            {
-                Name = "Nikita",
-                Id = 0,
-            });
-            Users.Add(new User()
-            {
-                Name = "Evgen",
-                Id = 1,
-            }); 
-            Users.Add(new User()
-            {
-                Name = "Vlad",
-                Id = 2,
-            });
 
         }
 
@@ -110,6 +118,8 @@ namespace ChatClient.ViewModels
         private RelayCommand startGame;
         private RelayCommand endGame;
         private RelayCommand rockSelect;
+        private RelayCommand paperSelect;
+        private RelayCommand scissorsSelect;
 
         public RelayCommand StartGame
         {
@@ -123,7 +133,7 @@ namespace ChatClient.ViewModels
 
                       client = new ServiceChatClient(new InstanceContext(this));
                       Me.Id = client.Connect(Me.Name);
-                      //client.;
+                      client.GetUsers();
 
                   }, (obj) => !Me.InGame && Me.Name.Length > 0));
             }
@@ -152,41 +162,92 @@ namespace ChatClient.ViewModels
                 return rockSelect ??
                   (rockSelect = new RelayCommand(obj =>
                   {
-                      Users.Add(new User()
-                      {
-                          Name = "Nikita",
-                          Id = random.Next(),
-                      });
-                  }/*(obj)=>!Me.InGame*/));
+                      client.SendChoice(Me.Id, ServiceChatGameAction.Rock);
+                  },(obj)=>Me.InGame));
+            }
+        }
+        public RelayCommand PaperSelect
+        {
+            get
+            {
+                return paperSelect ??
+                  (paperSelect = new RelayCommand(obj =>
+                  {
+                      client.SendChoice(Me.Id, ServiceChatGameAction.Paper);
+                  },(obj)=>Me.InGame));
+            }
+        }
+        public RelayCommand ScissorsSelect
+        {
+            get
+            {
+                return scissorsSelect ??
+                  (scissorsSelect = new RelayCommand(obj =>
+                  {
+                      client.SendChoice(Me.Id, ServiceChatGameAction.Scissors);
+                  },(obj)=>Me.InGame));
             }
         }
        
 
         #endregion
-
-
         void Users_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
             int playerCount = Users.Count;
             var points = CalculatePositions.Calculate(Users.Count, (int)CanvasHeight / 2, (int)canvasWeight / 2, (int)canvasHeight / 2);
-            string pt = "";
             for (int i = 0; i < playerCount; i++)
             {
                 Users[i].X = (int)points[i].X-25;
                 Users[i].Y = (int)points[i].Y-25;
-                Users[i].Color = new SolidColorBrush(System.Windows.Media.Color.FromArgb((byte)255, (byte)random.Next(0, 255), (byte)random.Next(0, 255), (byte)random.Next(0, 255)));
-
-
-                pt += $"| {i} | X = {(int)points[i].X} | Y = {(int)points[i].Y} |\n";
             }
-
-            //MessageBox.Show(pt);
         }
         public void MsgCallback(string msg)
         {
             MessageBox.Show(msg);
         }
 
+        public void CallbackTime(int time)
+        {
+            Time = time;
+        }
+
+        public void CallbackPlayers(ServiceChat.User[] users)
+        {
+            Users.Clear();
+            foreach (var user in users)
+            {
+                Users.Add(
+                    new Models.User()
+                    {
+                        Id = user.Id,
+                        Name = user.Name,
+                        InGame = true
+                    });
+            }
+        }
+
+        public async void CallbackResult(ServiceChatGameResult result)
+        {
+            switch(result) 
+            {
+                case ServiceChatGameResult.WinRock:
+                    Result = "Камень победил!";
+                    break;
+                case ServiceChatGameResult.WinScissors:
+                    Result = "Ножницы победили!";
+                    break;
+                case ServiceChatGameResult.WinPaper:
+                    Result = "Бумага победила!";
+                    break;
+                case ServiceChatGameResult.Draw:
+                    Result = "Ничья!";
+                    break;
+                default:
+                    break;
+            }
+            await Task.Delay(5000);
+            Result = "";
+        }
         #region MVVM
         public event PropertyChangedEventHandler PropertyChanged;
         public void OnPropertyChanged([CallerMemberName] string prop = "")
@@ -196,7 +257,10 @@ namespace ChatClient.ViewModels
         }
 
 
+
+
         #endregion
+        
     }
 }
 
